@@ -20,8 +20,14 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    await init_db()
-    await seed_demo_data()
+    try:
+        await init_db()
+        await seed_demo_data()
+    except Exception as e:
+        import traceback
+        print("STARTUP ERROR:", e)
+        traceback.print_exc()
+        raise
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(profiles.router, prefix="/api/profiles", tags=["Profiles"])
