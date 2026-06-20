@@ -1,4 +1,5 @@
 import os
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from app.models.user import User
@@ -12,7 +13,7 @@ client: AsyncIOMotorClient = None
 
 async def init_db():
     global client
-    client = AsyncIOMotorClient(MONGO_URL)
+    client = AsyncIOMotorClient(MONGO_URL, tlsCAFile=certifi.where())
     await init_beanie(
         database=client[DB_NAME],
         document_models=[User, SuspiciousProfile, FraudReport]
