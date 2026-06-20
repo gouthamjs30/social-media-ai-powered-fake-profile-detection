@@ -13,7 +13,8 @@ client: AsyncIOMotorClient = None
 
 async def init_db():
     global client
-    client = AsyncIOMotorClient(MONGO_URL, tlsCAFile=certifi.where())
+    tls_opts = {"tlsCAFile": certifi.where()} if MONGO_URL.startswith("mongodb+srv") else {}
+    client = AsyncIOMotorClient(MONGO_URL, **tls_opts)
     await init_beanie(
         database=client[DB_NAME],
         document_models=[User, SuspiciousProfile, FraudReport]
